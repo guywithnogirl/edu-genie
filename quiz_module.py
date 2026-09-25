@@ -2,28 +2,31 @@ import json
 import os
 import re
 
-import google.generativeai as genai
+from google import genai
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
 
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 
 def clean_json_block(text: str) -> str:
     """Remove Markdown code fences around a JSON response."""
-    return re.sub(r"```(?:json)?\s*|\s*```", "", text, flags=re.IGNORECASE).strip()
+    return re.sub(
+        r"```(?:json)?\s*|\s*```",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    ).strip()
 
 
 def generate_quiz(text: str) -> list:
     """Generate three MCQs with four options each."""
-    if not GEMINI_API_KEY:
+
+    if client is None:
         return [{"error": "GEMINI_API_KEY is not configured."}]
 
     try:
-        model = genai.GenerativeModel(model_name=GEMINI_MODEL)
-
         prompt = f"""
 You are a quiz generator.
 
@@ -48,7 +51,14 @@ Passage/topic:
 {text}
 """
 
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+        )
+
+        if not response.text:
+            raise ValueError("Gemini returned an empty response.")
+
         quiz_text = response.text.strip()
         cleaned_text = clean_json_block(quiz_text)
 

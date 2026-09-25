@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 
 from explanation_module import explain_topic
 from qna import answer_question_with_gemini
-from quiz_module import generate_quiz
+from quiz_module  import generate_quiz
 from summary_module import summarize_text
 from learning_path import get_learning_recommendations
 
@@ -16,7 +16,13 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "request":request
+        }
+    )
 
 
 @app.get("/qa")

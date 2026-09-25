@@ -1,10 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduGenie</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f8;
+            color: #222;
+        }
+
+        .container {
+            width: min(900px, 92%);
+            margin: 40px auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #2878e8;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 16px;
+            padding: 15px;
+            min-height: 20px;
+            background: #f7f7fa;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .quiz-question {
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .option {
+            padding: 8px;
+            margin: 6px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            font-family: inherit;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -83,8 +188,8 @@
 
             const response = await fetch("/explain", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({topic})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ topic })
             });
 
             const data = await response.json();
@@ -101,8 +206,8 @@
 
             const response = await fetch("/summarize", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({text})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
             });
 
             const data = await response.json();
@@ -119,8 +224,8 @@
 
             const response = await fetch("/quiz", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({text})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text })
             });
 
             const data = await response.json();
@@ -137,8 +242,8 @@
                     <div class="quiz-question">
                         <strong>Q${index + 1}. ${escapeHtml(item.question || item.error || "")}</strong>
                         ${(item.options || []).map(option =>
-                            `<div class="option">${escapeHtml(option)}</div>`
-                        ).join("")}
+                    `<div class="option">${escapeHtml(option)}</div>`
+                ).join("")}
                         ${item.answer ? `<p><strong>Answer:</strong> ${escapeHtml(item.answer)}</p>` : ""}
                     </div>
                 `).join("")
@@ -164,4 +269,5 @@
         }
     </script>
 </body>
+
 </html>

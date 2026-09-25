@@ -1,13 +1,12 @@
 import os
 
-import google.generativeai as genai
+from google import genai
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
 
 if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
-
+    client = genai.Client(api_key="GEMINI_API_KEY")
 
 def answer_question_with_gemini(question: str) -> str:
     """Answer an academic/general-knowledge question using Gemini."""
